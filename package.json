@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A React hook to easily keep an up-to-date value of one or more Firestore documents in state for use in your application.",
   "main": "index.js",
+  "repository": {
+    "url": "https://github.com/patrickspafford/react-firestore-listener"
+  },
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
