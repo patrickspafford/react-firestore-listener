@@ -16,12 +16,12 @@
   ],
   "author": "Patrick Spafford",
   "license": "ISC",
-  "dependencies": {
-    "firebase": "^8.6.1",
-    "react": "^17.0.2"
-  },
   "devDependencies": {
     "@types/react": "^17.0.6",
     "typescript": "^4.2.4"
+  },
+  "peerDependencies":{
+    "react": ">=16.8.0",
+    "firebase": ">=8.6.2"
   }
 }
