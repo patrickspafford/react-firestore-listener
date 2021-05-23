@@ -1,6 +1,5 @@
 import firebase from "firebase"
 import { useEffect, useState } from "react"
-import "firebase/storage"
 import { IConfig, IDoc } from "./interfaces"
 
 const useFirestoreListener = (config: IConfig) => {
@@ -57,7 +56,7 @@ const useFirestoreListener = (config: IConfig) => {
     return () => {
       docListener()
     }
-  }, [])
+  }, config.refresh ?? [])
 
   return docState
 }

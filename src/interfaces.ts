@@ -22,6 +22,7 @@ interface IDoc {
 interface IConfig {
   collection: string
   dataMapping?(data: IDoc): IDoc
+  refresh?: any[]
   options?: {
     isCollectionGroup?: boolean
     conditions: Condition[]
