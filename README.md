@@ -1,24 +1,29 @@
 # React Firestore Listener
 
+## Description
+
+A simple React hook for listening to Firestore documents.
+
 ## Installation
 
-- If it's not installed already, run `npm install firebase`
+- If it's not installed already, install Firebase.
 - Then run `npm install --save react-firestore-listener`
 
 Notes:
 
 - Works just as well with React Native!
+- Supports TypeScript
 
 ## Configuration
 
 ### Props
 
-| Prop        | Type                 | Description                                                                                             | Required |
-| ----------- | -------------------- | ------------------------------------------------------------------------------------------------------- | -------- |
-| collection  | string               | Name of the collection or collection group to listen to (if specified in options)                       | Yes      |
-| dataMapping | (data: IDoc) => IDoc | Filter the information kept from each document. Document id, metadata, and ref are included by default. | No       |
-| refresh     | any[]                | List of variables that if one or more are changed would force the listener to look again at Firestore   | No       |
-| options     | See below            | Object of options that help with the Firestore query                                                    | No       |
+| Prop        | Type               | Description                                                                                                                                                           | Required |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| collection  | string             | Name of the collection or collection group to listen to (if specified in options)                                                                                     | Yes      |
+| dataMapping | (data: Doc) => Doc | Filter the information kept from each document. Document id, metadata, and ref are included by default. Each doc is just a mapping of strings to a value of any type. | No       |
+| refresh     | any[]              | List of variables that if one or more are changed would force the listener to look again at Firestore                                                                 | No       |
+| options     | See below          | Object of options that help with the Firestore query                                                                                                                  | No       |
 
 ### Options
 
@@ -49,6 +54,10 @@ Notes:
 ```javascript
 import React from "react"
 import useFirestoreListener from "react-firestore-listener"
+/*
+We could also do the import like this, for example:
+import useFirestore from "react-firestore-listener"
+*/
 
 const config = {
   // insert your Firebase config here
