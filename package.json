@@ -16,6 +16,9 @@
   ],
   "author": "Patrick Spafford",
   "license": "ISC",
+  "keywords": [
+    "react", "firestore", "firebase", "realtime", "listener", "hook", "hooks", "state", "effect", "typescript"
+  ],
   "devDependencies": {
     "@types/react": "^17.0.6",
     "typescript": "^4.2.4"

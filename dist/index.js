@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_1 = require("firebase");
 const react_1 = require("react");
-require("firebase/storage");
 const useFirestoreListener = (config) => {
+    var _a;
     const [docState, setDocState] = react_1.useState([]);
     react_1.useEffect(() => {
         var _a, _b, _c, _d, _e, _f, _g, _h;
@@ -45,7 +45,7 @@ const useFirestoreListener = (config) => {
         return () => {
             docListener();
         };
-    }, []);
+    }, (_a = config.refresh) !== null && _a !== void 0 ? _a : []);
     return docState;
 };
 exports.default = useFirestoreListener;
