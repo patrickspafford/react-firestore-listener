@@ -27,21 +27,28 @@ const useFirestoreListener = (config: IConfig) => {
     if (config.options?.limit) {
       cr = cr.limit(config.options?.limit)
     }
-    const docListener = cr.onSnapshot((snapshots) => {
+    const docListener = cr.onSnapshot(async (snapshots) => {
       if (snapshots.empty) {
         setDocState([])
       } else {
+        if (config.dataMapping) {
+          const newDocs: IDoc[] = []
+          for await (const doc of snapshots.docs) {
+            const docData = {
+              ...doc.data(),
+              docId: doc.id,
+              ref: doc.ref,
+              metadata: doc.metadata,
+            }
+            const docMapped = await config.dataMapping(docData)
+            docMapped.push(newDocs)
+          }
+          setDocState(newDocs)
+          return
+        }
         setDocState(
           snapshots.docs.map(
             (snapshot: firebase.firestore.QueryDocumentSnapshot) => {
-              if (config.dataMapping) {
-                return config.dataMapping({
-                  ...snapshot.data(),
-                  docId: snapshot.id,
-                  ref: snapshot.ref,
-                  metadata: snapshot.metadata,
-                })
-              }
               return {
                 ...snapshot.data(),
                 docId: snapshot.id,
