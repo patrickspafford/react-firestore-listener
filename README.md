@@ -18,12 +18,12 @@ Notes:
 
 ### Props
 
-| Prop        | Type               | Description                                                                                                                                                           | Required |
-| ----------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| collection  | string             | Name of the collection or collection group to listen to (if specified in options)                                                                                     | Yes      |
-| dataMapping | (data: Doc) => Doc | Filter the information kept from each document. Document id, metadata, and ref are included by default. Each doc is just a mapping of strings to a value of any type. | No       |
-| refresh     | any[]              | List of variables that if one or more are changed would force the listener to look again at Firestore                                                                 | No       |
-| options     | See below          | Object of options that help with the Firestore query                                                                                                                  | No       |
+| Prop        | Type                                              | Description                                                                                                                                                                        | Required |
+| ----------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| collection  | string                                            | Name of the collection or collection group to listen to (if specified in options)                                                                                                  | Yes      |
+| dataMapping | (data: Doc) => Doc or (data: Doc) => Promise<Doc> | Filter the information kept from each document. Document id (as `docId`), metadata, and ref are included by default. Each doc is just a mapping of strings to a value of any type. | No       |
+| refresh     | any[]                                             | List of variables that if one or more are changed would force the listener to look again at Firestore                                                                              | No       |
+| options     | See below                                         | Object of options that help with the Firestore query                                                                                                                               | No       |
 
 ### Options
 
