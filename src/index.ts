@@ -14,7 +14,7 @@ const useFirestoreListener = (config: IConfig) => {
       : firestore.collectionGroup(config.collection)
     if (config.options?.conditions) {
       config.options?.conditions.forEach((condition) => {
-        const { field, operator, value } = condition
+        const [field, operator, value] = condition
         cr = cr.where(field, operator, value)
       })
     }

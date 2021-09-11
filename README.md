@@ -36,11 +36,11 @@ Notes:
 
 ### Condition
 
-| Key      | Type               | Description                                  | Required |
-| -------- | ------------------ | -------------------------------------------- | -------- |
-| field    | Firestore field    | The field that you are querying on           | Yes      |
-| operator | Firestore operator | The operator acts on the field and value     | Yes      |
-| value    | any                | The value that you are looking to query with | Yes      |
+| Index | Name     | Type               | Description                                  | Required |
+| ----- | -------- | ------------------ | -------------------------------------------- | -------- |
+| 0     | field    | Firestore field    | The field that you are querying on           | Yes      |
+| 1     | operator | Firestore operator | The operator acts on the field and value     | Yes      |
+| 2     | value    | any                | The value that you are looking to query with | Yes      |
 
 ### OrderBy
 
@@ -57,12 +57,17 @@ import useFirestoreListener from "react-firestore-listener"
 /*
 We could also do the import like this, for example:
 import useFirestore from "react-firestore-listener"
+
+Needless to say, the naming of the import does not matter because it is a default export.
 */
 
 const config = {
   // insert your Firebase config here
 }
 
+/*
+We need to make sure that Firebase is initialized before we can listen to documents.
+*/
 const initFirebase = () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(config)
@@ -74,13 +79,7 @@ const App = () => {
   const sports = useFirestoreListener({
     collection: "hobbies",
     options: {
-      conditions: [
-        {
-          field: "type",
-          operator: "==",
-          value: "sport",
-        },
-      ],
+      conditions: [["type", "==", "sport"]],
     },
   })
 

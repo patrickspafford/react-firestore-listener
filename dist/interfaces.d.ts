@@ -2,11 +2,7 @@ import firebase from "firebase";
 import "firebase/firestore";
 declare type Field = string | firebase.firestore.FieldPath;
 declare type Operator = firebase.firestore.WhereFilterOp;
-interface Condition {
-    field: Field;
-    operator: Operator;
-    value: any;
-}
+declare type Condition = [Field, Operator, any];
 declare type OrderBy = {
     field: Field;
     descending: boolean;

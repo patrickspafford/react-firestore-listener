@@ -4,11 +4,14 @@ import "firebase/firestore"
 type Field = string | firebase.firestore.FieldPath
 type Operator = firebase.firestore.WhereFilterOp
 
+/*
 interface Condition {
   field: Field
   operator: Operator
   value: any
 }
+*/
+type Condition = [Field, Operator, any]
 
 type OrderBy = {
   field: Field
