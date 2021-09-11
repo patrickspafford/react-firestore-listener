@@ -41,7 +41,7 @@ const useFirestoreListener = (config: IConfig) => {
               metadata: doc.metadata,
             }
             const docMapped = await config.dataMapping(docData)
-            docMapped.push(newDocs)
+            newDocs.push(docMapped)
           }
           setDocState(newDocs)
           return
