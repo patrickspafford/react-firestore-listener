@@ -58,7 +58,7 @@ const useFirestoreListener = (config) => {
                             const doc = _l.value;
                             const docData = Object.assign(Object.assign({}, doc.data()), { docId: doc.id, ref: doc.ref, metadata: doc.metadata });
                             const docMapped = yield config.dataMapping(docData);
-                            docMapped.push(newDocs);
+                            newDocs.push(docMapped);
                         }
                     }
                     catch (e_1_1) { e_1 = { error: e_1_1 }; }
