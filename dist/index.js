@@ -32,7 +32,7 @@ const useFirestoreListener = (config) => {
             : firestore.collectionGroup(config.collection);
         if ((_b = config.options) === null || _b === void 0 ? void 0 : _b.conditions) {
             (_c = config.options) === null || _c === void 0 ? void 0 : _c.conditions.forEach((condition) => {
-                const { field, operator, value } = condition;
+                const [field, operator, value] = condition;
                 cr = cr.where(field, operator, value);
             });
         }
