@@ -16,7 +16,7 @@ interface IDoc {
 }
 interface IConfig {
     collection: string;
-    dataMapping?(data: IDoc): IDoc;
+    dataMapping?: ((data: IDoc) => IDoc) | ((data: IDoc) => Promise<IDoc>);
     refresh?: any[];
     options?: {
         isCollectionGroup?: boolean;
