@@ -20,6 +20,9 @@ type OrderBy = {
 
 interface IDoc {
   [key: string]: any
+  ref: firebase.firestore.DocumentReference
+  docId: string
+  metadata: firebase.firestore.SnapshotMetadata
 }
 
 interface IConfig {
