@@ -1,27 +1,30 @@
 import firebase from "firebase";
 import "firebase/firestore";
-declare type Field = string | firebase.firestore.FieldPath;
+declare type Field<T> = keyof T;
 declare type Operator = firebase.firestore.WhereFilterOp;
-declare type Condition = [Field, Operator, any];
-declare type OrderBy = {
-    field: Field;
+declare type Condition<T> = [Field<T>, Operator, any];
+declare type OrderBy<T> = {
+    field: Field<T>;
     descending: boolean;
 };
 interface IDoc {
-    [key: string]: any;
     ref: firebase.firestore.DocumentReference;
     docId: string;
     metadata: firebase.firestore.SnapshotMetadata;
 }
-interface IConfig {
+declare type ICustomDoc<T> = {
+    [k in keyof T]: unknown;
+} & IDoc;
+declare type DocListener = undefined | (() => void);
+interface IConfig<T> {
     collection: string;
-    dataMapping?: ((data: IDoc) => IDoc) | ((data: IDoc) => Promise<IDoc>);
+    dataMapping?: ((data: ICustomDoc<T>) => ICustomDoc<T>) | ((data: ICustomDoc<T>) => Promise<ICustomDoc<T>>);
     refresh?: any[];
     options?: {
         isCollectionGroup?: boolean;
-        conditions: Condition[];
-        orderBy?: OrderBy[];
+        conditions: Condition<T>[];
+        orderBy?: OrderBy<T>[];
         limit?: number;
     };
 }
-export { IConfig, IDoc };
+export { IConfig, IDoc, ICustomDoc, Condition, DocListener };
