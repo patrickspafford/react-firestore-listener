@@ -74,14 +74,25 @@ const initFirebase = () => {
   }
 }
 
+interface IHobby {
+  name: string;
+}
+
+interface ISport extends IHobby {
+  isTeam: boolean;
+}
+
 const App = () => {
-  const hobbies = useFirestoreListener({ collection: "hobbies" })
-  const sports = useFirestoreListener({
-    collection: "hobbies",
-    options: {
-      conditions: [["type", "==", "sport"]],
-    },
-  })
+  const hobbies = useFirestoreListener < IHobby > { collection: "hobbies" }
+  const sports =
+    useFirestoreListener <
+    ISport >
+    {
+      collection: "hobbies",
+      options: {
+        conditions: [["type", "==", "sport"]],
+      },
+    }
 
   return (
     <div>
