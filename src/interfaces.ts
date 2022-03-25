@@ -24,9 +24,7 @@ interface IDoc {
   metadata: firebase.firestore.SnapshotMetadata
 }
 
-type ICustomDoc<T> = {
-  [k in keyof T]: unknown
-} & IDoc
+type ICustomDoc<T> = T & IDoc
 
 type DocListener = undefined | (() => void)
 

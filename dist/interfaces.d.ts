@@ -12,9 +12,7 @@ interface IDoc {
     docId: string;
     metadata: firebase.firestore.SnapshotMetadata;
 }
-declare type ICustomDoc<T> = {
-    [k in keyof T]: unknown;
-} & IDoc;
+declare type ICustomDoc<T> = T & IDoc;
 declare type DocListener = undefined | (() => void);
 interface IConfig<T> {
     collection: string;
