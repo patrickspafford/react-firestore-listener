@@ -24,7 +24,7 @@ const useFirestoreListener = (config) => {
     const [docState, setDocState] = (0, react_1.useState)([]);
     (0, react_1.useEffect)(() => {
         var _a, _b, _c, _d, _e;
-        if ((0, app_1.getApp)() === undefined) {
+        if (!app_1.getApp || !(0, app_1.getApp)()) {
             console.warn(`useFirestoreListener: A default app has not been initialized.`);
             return;
         }
