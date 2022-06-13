@@ -18,9 +18,10 @@ const useFirestoreListener = <T>(config: IConfig<T>) => {
 
   useEffect(() => {
     if (!getApp || !getApp()) {
-      console.warn(
-        `useFirestoreListener: A default app has not been initialized.`
-      )
+      if (config.options?.enableLogging)
+        console.warn(
+          `useFirestoreListener: A default app has not been initialized.`
+        )
       return
     }
     let docListener: DocListener
@@ -80,11 +81,13 @@ const useFirestoreListener = <T>(config: IConfig<T>) => {
           )
         },
         (err) => {
-          console.error(`useFirestoreListener: `, err)
+          if (config.options?.enableLogging)
+            console.error(`useFirestoreListener: `, err)
         }
       )
     } catch (err) {
-      console.error(`useFirestoreListener error: `, err)
+      if (config.options?.enableLogging)
+        console.error(`useFirestoreListener error: `, err)
     }
     return () => {
       docListener?.()

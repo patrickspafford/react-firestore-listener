@@ -38,10 +38,10 @@ interface IConfig<T> {
     | ((data: ICustomDoc<T>) => Promise<ICustomDoc<T>>)
   refresh?: any[]
   options?: {
-    isCollectionGroup?: boolean
     conditions: Condition<T>[]
     orderBy?: OrderBy<T>[]
     limit?: number
+    enableLogging?: boolean
   }
 }
 

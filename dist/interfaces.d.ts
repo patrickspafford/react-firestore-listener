@@ -18,10 +18,10 @@ interface IConfig<T> {
     dataMapping?: ((data: ICustomDoc<T>) => ICustomDoc<T>) | ((data: ICustomDoc<T>) => Promise<ICustomDoc<T>>);
     refresh?: any[];
     options?: {
-        isCollectionGroup?: boolean;
         conditions: Condition<T>[];
         orderBy?: OrderBy<T>[];
         limit?: number;
+        enableLogging?: boolean;
     };
 }
 export { IConfig, IDoc, ICustomDoc, Condition, DocListener };

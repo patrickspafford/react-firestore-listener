@@ -23,16 +23,17 @@ const useFirestoreListener = (config) => {
     var _a;
     const [docState, setDocState] = (0, react_1.useState)([]);
     (0, react_1.useEffect)(() => {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f, _g;
         if (!app_1.getApp || !(0, app_1.getApp)()) {
-            console.warn(`useFirestoreListener: A default app has not been initialized.`);
+            if ((_a = config.options) === null || _a === void 0 ? void 0 : _a.enableLogging)
+                console.warn(`useFirestoreListener: A default app has not been initialized.`);
             return;
         }
         let docListener;
         try {
             const db = (0, firestore_1.getFirestore)();
             const queryConditions = [];
-            (_a = config.options) === null || _a === void 0 ? void 0 : _a.conditions.forEach((condition) => {
+            (_b = config.options) === null || _b === void 0 ? void 0 : _b.conditions.forEach((condition) => {
                 const [field, operator, value] = condition;
                 if (typeof field === "string") {
                     queryConditions.push((0, firestore_1.where)(field, operator, value));
@@ -41,7 +42,7 @@ const useFirestoreListener = (config) => {
                     throw new Error("Field must be a string.");
             });
             // cr => collection reference
-            (_c = (_b = config.options) === null || _b === void 0 ? void 0 : _b.orderBy) === null || _c === void 0 ? void 0 : _c.forEach((order) => {
+            (_d = (_c = config.options) === null || _c === void 0 ? void 0 : _c.orderBy) === null || _d === void 0 ? void 0 : _d.forEach((order) => {
                 const { field, descending } = order;
                 if (typeof field !== "number" && typeof field !== "symbol") {
                     queryConditions.push((0, firestore_1.orderBy)(field, descending ? "desc" : "asc"));
@@ -49,12 +50,12 @@ const useFirestoreListener = (config) => {
                 else
                     throw new Error("Field must be a string.");
             });
-            if ((_d = config.options) === null || _d === void 0 ? void 0 : _d.limit) {
-                queryConditions.push((0, firestore_1.limit)((_e = config.options) === null || _e === void 0 ? void 0 : _e.limit));
+            if ((_e = config.options) === null || _e === void 0 ? void 0 : _e.limit) {
+                queryConditions.push((0, firestore_1.limit)((_f = config.options) === null || _f === void 0 ? void 0 : _f.limit));
             }
             const cr = (0, firestore_1.query)((0, firestore_1.collection)(db, config.collection), ...queryConditions);
             docListener = (0, firestore_1.onSnapshot)(cr, (snapshots) => __awaiter(void 0, void 0, void 0, function* () {
-                var e_1, _f;
+                var e_1, _h;
                 if (snapshots.empty) {
                     setDocState([]);
                     return;
@@ -62,8 +63,8 @@ const useFirestoreListener = (config) => {
                 if (config.dataMapping) {
                     const newDocs = [];
                     try {
-                        for (var _g = __asyncValues(snapshots.docs), _h; _h = yield _g.next(), !_h.done;) {
-                            const doc = _h.value;
+                        for (var _j = __asyncValues(snapshots.docs), _k; _k = yield _j.next(), !_k.done;) {
+                            const doc = _k.value;
                             const baseDocData = doc.data();
                             const docData = Object.assign(Object.assign({}, baseDocData), { docId: doc.id, ref: doc.ref, metadata: doc.metadata });
                             const docMapped = yield config.dataMapping(docData);
@@ -73,7 +74,7 @@ const useFirestoreListener = (config) => {
                     catch (e_1_1) { e_1 = { error: e_1_1 }; }
                     finally {
                         try {
-                            if (_h && !_h.done && (_f = _g.return)) yield _f.call(_g);
+                            if (_k && !_k.done && (_h = _j.return)) yield _h.call(_j);
                         }
                         finally { if (e_1) throw e_1.error; }
                     }
@@ -85,11 +86,14 @@ const useFirestoreListener = (config) => {
                     return Object.assign(Object.assign({}, snapshotData), { docId: snapshot.id, ref: snapshot.ref, metadata: snapshot.metadata });
                 }));
             }), (err) => {
-                console.error(`useFirestoreListener: `, err);
+                var _a;
+                if ((_a = config.options) === null || _a === void 0 ? void 0 : _a.enableLogging)
+                    console.error(`useFirestoreListener: `, err);
             });
         }
         catch (err) {
-            console.error(`useFirestoreListener error: `, err);
+            if ((_g = config.options) === null || _g === void 0 ? void 0 : _g.enableLogging)
+                console.error(`useFirestoreListener error: `, err);
         }
         return () => {
             docListener === null || docListener === void 0 ? void 0 : docListener();
