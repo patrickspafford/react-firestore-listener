@@ -16,81 +16,80 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const firebase_1 = require("firebase");
 const react_1 = require("react");
+const firestore_1 = require("firebase/firestore");
+const app_1 = require("firebase/app");
 const useFirestoreListener = (config) => {
     var _a;
     const [docState, setDocState] = (0, react_1.useState)([]);
     (0, react_1.useEffect)(() => {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        if (!firebase_1.default.apps.length)
+        var _a, _b, _c, _d, _e;
+        if ((0, app_1.getApp)() === undefined) {
+            console.warn(`useFirestoreListener: A default app has not been initialized.`);
             return;
+        }
         let docListener;
         try {
-            const firestore = firebase_1.default.firestore();
+            const db = (0, firestore_1.getFirestore)();
+            const queryConditions = [];
+            (_a = config.options) === null || _a === void 0 ? void 0 : _a.conditions.forEach((condition) => {
+                const [field, operator, value] = condition;
+                if (typeof field === "string") {
+                    queryConditions.push((0, firestore_1.where)(field, operator, value));
+                }
+                else
+                    throw new Error("Field must be a string.");
+            });
             // cr => collection reference
-            let cr = !((_a = config.options) === null || _a === void 0 ? void 0 : _a.isCollectionGroup)
-                ? firestore.collection(config.collection)
-                : firestore.collectionGroup(config.collection);
-            if ((_b = config.options) === null || _b === void 0 ? void 0 : _b.conditions) {
-                (_c = config.options) === null || _c === void 0 ? void 0 : _c.conditions.forEach((condition) => {
-                    const [field, operator, value] = condition;
-                    if (typeof field !== "number" && typeof field !== "symbol") {
-                        cr = cr.where(field, operator, value);
-                    }
-                    else
-                        throw new Error("Field must be a string.");
-                });
+            (_c = (_b = config.options) === null || _b === void 0 ? void 0 : _b.orderBy) === null || _c === void 0 ? void 0 : _c.forEach((order) => {
+                const { field, descending } = order;
+                if (typeof field !== "number" && typeof field !== "symbol") {
+                    queryConditions.push((0, firestore_1.orderBy)(field, descending ? "desc" : "asc"));
+                }
+                else
+                    throw new Error("Field must be a string.");
+            });
+            if ((_d = config.options) === null || _d === void 0 ? void 0 : _d.limit) {
+                queryConditions.push((0, firestore_1.limit)((_e = config.options) === null || _e === void 0 ? void 0 : _e.limit));
             }
-            if ((_d = config.options) === null || _d === void 0 ? void 0 : _d.orderBy) {
-                (_f = (_e = config.options) === null || _e === void 0 ? void 0 : _e.orderBy) === null || _f === void 0 ? void 0 : _f.forEach((order) => {
-                    const { field, descending } = order;
-                    if (typeof field !== "number" && typeof field !== "symbol") {
-                        cr = cr.orderBy(field, descending ? "desc" : "asc");
-                    }
-                    else
-                        throw new Error("Field must be a string.");
-                });
-            }
-            if ((_g = config.options) === null || _g === void 0 ? void 0 : _g.limit) {
-                cr = cr.limit((_h = config.options) === null || _h === void 0 ? void 0 : _h.limit);
-            }
-            docListener = cr.onSnapshot((snapshots) => __awaiter(void 0, void 0, void 0, function* () {
-                var e_1, _j;
+            const cr = (0, firestore_1.query)((0, firestore_1.collection)(db, config.collection), ...queryConditions);
+            docListener = (0, firestore_1.onSnapshot)(cr, (snapshots) => __awaiter(void 0, void 0, void 0, function* () {
+                var e_1, _f;
                 if (snapshots.empty) {
                     setDocState([]);
+                    return;
                 }
-                else {
-                    if (config.dataMapping) {
-                        const newDocs = [];
-                        try {
-                            for (var _k = __asyncValues(snapshots.docs), _l; _l = yield _k.next(), !_l.done;) {
-                                const doc = _l.value;
-                                const baseDocData = doc.data();
-                                const docData = Object.assign(Object.assign({}, baseDocData), { docId: doc.id, ref: doc.ref, metadata: doc.metadata });
-                                const docMapped = yield config.dataMapping(docData);
-                                newDocs.push(docMapped);
-                            }
+                if (config.dataMapping) {
+                    const newDocs = [];
+                    try {
+                        for (var _g = __asyncValues(snapshots.docs), _h; _h = yield _g.next(), !_h.done;) {
+                            const doc = _h.value;
+                            const baseDocData = doc.data();
+                            const docData = Object.assign(Object.assign({}, baseDocData), { docId: doc.id, ref: doc.ref, metadata: doc.metadata });
+                            const docMapped = yield config.dataMapping(docData);
+                            newDocs.push(docMapped);
                         }
-                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                        finally {
-                            try {
-                                if (_l && !_l.done && (_j = _k.return)) yield _j.call(_k);
-                            }
-                            finally { if (e_1) throw e_1.error; }
-                        }
-                        setDocState(newDocs);
-                        return;
                     }
-                    setDocState(snapshots.docs.map((snapshot) => {
-                        const snapshotData = snapshot.data();
-                        return Object.assign(Object.assign({}, snapshotData), { docId: snapshot.id, ref: snapshot.ref, metadata: snapshot.metadata });
-                    }));
+                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                    finally {
+                        try {
+                            if (_h && !_h.done && (_f = _g.return)) yield _f.call(_g);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                    }
+                    setDocState(newDocs);
+                    return;
                 }
-            }));
+                setDocState(snapshots.docs.map((snapshot) => {
+                    const snapshotData = snapshot.data();
+                    return Object.assign(Object.assign({}, snapshotData), { docId: snapshot.id, ref: snapshot.ref, metadata: snapshot.metadata });
+                }));
+            }), (err) => {
+                console.error(`useFirestoreListener: `, err);
+            });
         }
         catch (err) {
-            console.error(`useFirestoreListener error: ${err}`);
+            console.error(`useFirestoreListener error: `, err);
         }
         return () => {
             docListener === null || docListener === void 0 ? void 0 : docListener();

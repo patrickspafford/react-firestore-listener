@@ -1,16 +1,15 @@
-import firebase from "firebase";
-import "firebase/firestore";
+import { WhereFilterOp, DocumentReference, SnapshotMetadata } from "firebase/firestore";
 declare type Field<T> = keyof T;
-declare type Operator = firebase.firestore.WhereFilterOp;
+declare type Operator = WhereFilterOp;
 declare type Condition<T> = [Field<T>, Operator, any];
 declare type OrderBy<T> = {
     field: Field<T>;
     descending: boolean;
 };
 interface IDoc {
-    ref: firebase.firestore.DocumentReference;
+    ref: DocumentReference;
     docId: string;
-    metadata: firebase.firestore.SnapshotMetadata;
+    metadata: SnapshotMetadata;
 }
 declare type ICustomDoc<T> = T & IDoc;
 declare type DocListener = undefined | (() => void);

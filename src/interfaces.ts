@@ -1,8 +1,11 @@
-import firebase from "firebase"
-import "firebase/firestore"
+import {
+  WhereFilterOp,
+  DocumentReference,
+  SnapshotMetadata,
+} from "firebase/firestore"
 
 type Field<T> = keyof T
-type Operator = firebase.firestore.WhereFilterOp
+type Operator = WhereFilterOp
 
 /*
 interface Condition {
@@ -19,9 +22,9 @@ type OrderBy<T> = {
 }
 
 interface IDoc {
-  ref: firebase.firestore.DocumentReference
+  ref: DocumentReference
   docId: string
-  metadata: firebase.firestore.SnapshotMetadata
+  metadata: SnapshotMetadata
 }
 
 type ICustomDoc<T> = T & IDoc

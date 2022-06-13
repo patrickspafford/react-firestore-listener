@@ -1,6 +1,6 @@
 {
   "name": "react-firestore-listener",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "A React hook to easily keep an up-to-date value of one or more Firestore documents in state for use in your application.",
   "main": "index.js",
   "repository": {
@@ -34,9 +34,9 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "firebase": ">=8.4.1"
+    "firebase": ">=9"
   },
   "dependencies": {
-    "firebase": "^8.10.1"
+    "firebase": "^9.8.3"
   }
 }

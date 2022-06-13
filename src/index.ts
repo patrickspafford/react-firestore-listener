@@ -1,42 +1,56 @@
-import firebase from "firebase"
 import { useEffect, useState } from "react"
 import { IConfig, ICustomDoc, Condition, DocListener } from "./interfaces"
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  getFirestore,
+  QueryConstraint,
+  orderBy,
+  QueryDocumentSnapshot,
+  limit,
+} from "firebase/firestore"
+import { getApp } from "firebase/app"
 
 const useFirestoreListener = <T>(config: IConfig<T>) => {
   const [docState, setDocState] = useState<ICustomDoc<T>[]>([])
 
   useEffect(() => {
-    if (!firebase.apps.length) return
+    if (getApp() === undefined) {
+      console.warn(
+        `useFirestoreListener: A default app has not been initialized.`
+      )
+      return
+    }
     let docListener: DocListener
     try {
-      const firestore = firebase.firestore()
+      const db = getFirestore()
+      const queryConditions: QueryConstraint[] = []
+      config.options?.conditions.forEach((condition: Condition<T>) => {
+        const [field, operator, value] = condition
+        if (typeof field === "string") {
+          queryConditions.push(where(field, operator, value))
+        } else throw new Error("Field must be a string.")
+      })
       // cr => collection reference
-      let cr = !config.options?.isCollectionGroup
-        ? firestore.collection(config.collection)
-        : firestore.collectionGroup(config.collection)
-      if (config.options?.conditions) {
-        config.options?.conditions.forEach((condition: Condition<T>) => {
-          const [field, operator, value] = condition
-          if (typeof field !== "number" && typeof field !== "symbol") {
-            cr = cr.where(field, operator, value)
-          } else throw new Error("Field must be a string.")
-        })
-      }
-      if (config.options?.orderBy) {
-        config.options?.orderBy?.forEach((order) => {
-          const { field, descending } = order
-          if (typeof field !== "number" && typeof field !== "symbol") {
-            cr = cr.orderBy(field, descending ? "desc" : "asc")
-          } else throw new Error("Field must be a string.")
-        })
-      }
+      config.options?.orderBy?.forEach((order) => {
+        const { field, descending } = order
+        if (typeof field !== "number" && typeof field !== "symbol") {
+          queryConditions.push(orderBy(field, descending ? "desc" : "asc"))
+        } else throw new Error("Field must be a string.")
+      })
       if (config.options?.limit) {
-        cr = cr.limit(config.options?.limit)
+        queryConditions.push(limit(config.options?.limit))
       }
-      docListener = cr.onSnapshot(async (snapshots) => {
-        if (snapshots.empty) {
-          setDocState([])
-        } else {
+      const cr = query(collection(db, config.collection), ...queryConditions)
+      docListener = onSnapshot(
+        cr,
+        async (snapshots) => {
+          if (snapshots.empty) {
+            setDocState([])
+            return
+          }
           if (config.dataMapping) {
             const newDocs: ICustomDoc<T>[] = []
             for await (const doc of snapshots.docs) {
@@ -54,22 +68,23 @@ const useFirestoreListener = <T>(config: IConfig<T>) => {
             return
           }
           setDocState(
-            snapshots.docs.map(
-              (snapshot: firebase.firestore.QueryDocumentSnapshot) => {
-                const snapshotData: T = snapshot.data() as T
-                return {
-                  ...snapshotData,
-                  docId: snapshot.id,
-                  ref: snapshot.ref,
-                  metadata: snapshot.metadata,
-                }
+            snapshots.docs.map((snapshot: QueryDocumentSnapshot) => {
+              const snapshotData: T = snapshot.data() as T
+              return {
+                ...snapshotData,
+                docId: snapshot.id,
+                ref: snapshot.ref,
+                metadata: snapshot.metadata,
               }
-            )
+            })
           )
+        },
+        (err) => {
+          console.error(`useFirestoreListener: `, err)
         }
-      })
+      )
     } catch (err) {
-      console.error(`useFirestoreListener error: ${err}`)
+      console.error(`useFirestoreListener error: `, err)
     }
     return () => {
       docListener?.()
