@@ -17,7 +17,7 @@ const useFirestoreListener = <T>(config: IConfig<T>) => {
   const [docState, setDocState] = useState<ICustomDoc<T>[]>([])
 
   useEffect(() => {
-    if (getApp() === undefined) {
+    if (!getApp || !getApp()) {
       console.warn(
         `useFirestoreListener: A default app has not been initialized.`
       )

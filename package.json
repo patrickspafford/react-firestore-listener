@@ -35,8 +35,5 @@
   "peerDependencies": {
     "react": ">=16.8.0",
     "firebase": ">=9"
-  },
-  "dependencies": {
-    "firebase": "^9.8.3"
   }
 }
